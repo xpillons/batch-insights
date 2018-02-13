@@ -237,6 +237,11 @@ class NodeStatsCollector:
                      process.memory_info().rss, stats.mem_avail)
         client = self.telemetry_client
 
+        # Add Task Id context
+        taskId = os.environ.get('AZ_BATCH_TASK_ID', '_no_task_')
+        context = client.context
+        context.properties["taskId"] = taskId
+
         for cpu_n in range(0, stats.cpu_count):
             client.track_metric("Cpu usage",
                                 stats.cpu_percent[cpu_n], properties={"Cpu #": cpu_n})
